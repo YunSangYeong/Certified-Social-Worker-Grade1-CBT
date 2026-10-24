@@ -224,7 +224,7 @@ def build():
    assert len(row)==7,row
    stem,*rest=row; correct,*wrong,explanation=rest
    choices=[correct,*wrong]; shift=(si+n)%5; choices=choices[shift:]+choices[:shift]
-   bank.append(dict(id=f'SWG1-{si+1:02}-{n:03}',subject=SUBJECTS[si],topic=stem.split('에서')[0][:45],question=stem,choices=choices,answer=choices.index(correct)+1,explanation=explanation,difficulty='중',year=None,session=None,type='original',sourceUrl='https://github.com/YunSangYeong/Certified-Social-Worker-Grade1-CBT/blob/main/scripts/author_bank.py',verificationStatus='reviewed',reviewNote='AI 일반 지식 기반 자체 작성. 문항·보기·해설의 내부 논리 및 중복 검토. 공식 출제기준·현행법 조문 대조 및 외부 전문가 검수 미완료. 저장소 링크는 작성 원고이며 외부 정답 증빙이 아님.',version='main',rights='자체 제작 원고: CC BY 4.0, 표시: Certified-Social-Worker-Grade1-CBT contributors. 기출 원문을 복제하지 않음.'))
+   bank.append(dict(id=f'SWG1-{si+1:02}-{n:03}',subject=SUBJECTS[si],topic=stem.split('에서')[0][:45],question=stem,choices=choices,answer=choices.index(correct)+1,explanation=explanation,difficulty='중',year=None,session=None,type='original',sourceUrl='https://github.com/YunSangYeong/Certified-Social-Worker-Grade1-CBT/blob/b96de4ce1f110c79b1607002592825811d06fc4f/scripts/author_bank.py',verificationStatus='reviewed',reviewNote='AI 일반 지식 기반 자체 작성. 문항·보기·해설의 내부 논리 및 중복 검토. 공식 출제기준·현행법 조문 대조 및 외부 전문가 검수 미완료. 저장소 링크는 작성 원고이며 외부 정답 증빙이 아님.',version='main',rights='자체 제작 원고: CC BY 4.0, 표시: Certified-Social-Worker-Grade1-CBT contributors. 기출 원문을 복제하지 않음.'))
  return bank
 if __name__=='__main__':
  bank=build(); root=Path(__file__).resolve().parents[1]
