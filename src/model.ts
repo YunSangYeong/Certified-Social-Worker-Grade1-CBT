@@ -21,6 +21,7 @@ export interface Question {
   version: Version;
   rights: string;
   family?: string;
+  variantKind?: "scenario" | "numeric";
   calculation?: {
     kind: string;
     values: number[];
@@ -30,6 +31,13 @@ export interface Question {
   };
 }
 export const BASE_BANK = bank as Question[];
+export const BANK_COUNTS = {
+  reviewed: BASE_BANK.filter(q => q.verificationStatus === "reviewed").length,
+  scenario: BASE_BANK.filter(q => q.variantKind === "scenario").length,
+  scenarioFamilies: new Set(BASE_BANK.filter(q => q.variantKind === "scenario").map(q => q.family)).size,
+  numeric: BASE_BANK.filter(q => q.variantKind === "numeric" || q.calculation).length,
+  shortfall: Math.max(0, PROFILE.bankTarget - BASE_BANK.filter(q => q.verificationStatus === "reviewed").length),
+};
 export const TYPE_LABEL = {
   original: "자체 제작",
   past: "원문 기출",
@@ -359,7 +367,7 @@ export function validateQuestion(value: unknown): Question {
     (typeof q.family !== "string" || !q.family.trim() || q.family.length > 100)
   )
     throw new Error(
-      "계산 유형 family는 비어 있지 않은 100자 이내 문자열이어야 합니다.",
+      "문항 묶음 family는 비어 있지 않은 100자 이내 문자열이어야 합니다.",
     );
   if (!SUBJECTS.includes(q.subject as Subject))
     throw new Error("과목이 올바르지 않습니다.");

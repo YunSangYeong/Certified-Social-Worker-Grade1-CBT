@@ -43,6 +43,7 @@ import {
   answerExam,
   resumeSection,
   BASE_BANK,
+  BANK_COUNTS,
   checkPractice,
   createExam,
   emptyStore,
@@ -1798,7 +1799,7 @@ function BankManager({
             기본 문항은 {BASE_BANK.length}개 모두 자체 제작입니다.
           </strong>
           <br />
-          원문 기출 0 · 복원문제 0 · 숫자 조건 변형 0. 목표 1,000문항 대비 800문항 부족. AI 일반 지식 기반 자체 작성과 내부 내용·중복 검토이며, 공식 출제기준·현행법 조문 대조 및 외부 전문가 검수는 미완료입니다. 시험 규칙 역시 공식 원문 확인 대기입니다. 교시별 50·75·75분, 8영역 각 25문항, 총 200문항·5지선다, 전체 60%와 3과목 각각 40%를 학습용으로 적용합니다. 실제 시험과 난이도·운영은 다를 수 있습니다.
+          원문 기출 0 · 복원문제 0 · 숫자 조건 변형 {BANK_COUNTS.numeric}. 내부 검토 {BANK_COUNTS.reviewed}문항 · 목표 {PROFILE.bankTarget}문항 · 부족 {BANK_COUNTS.shortfall}문항. 추가 사례 적용형 {BANK_COUNTS.scenario}문항은 {BANK_COUNTS.scenarioFamilies}개 개념군 × 사례 4개입니다. 전체 문항 수는 독립 개념 수와 다릅니다. AI 일반 지식 기반 자체 작성과 내부 내용·중복 검토이며, 공식 출제기준·현행법 조문 대조 및 외부 전문가 검수는 미완료입니다. 시험 규칙 역시 공식 원문 확인 대기입니다. 교시별 50·75·75분, 8영역 각 25문항, 총 200문항·5지선다, 전체 60%와 3과목 각각 40%를 학습용으로 적용합니다. 실제 시험과 난이도·운영은 다를 수 있습니다.
         </div>
       </div>
       <div className="bank-tools panel">

@@ -10,10 +10,11 @@ const choices=(page:Page)=>page.getByRole('group',{name:'답안 선택'}).getByR
 test('대시보드·모든 메뉴·상단 배너와 학습 기준 선택 없음·가로 넘침 없음',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('');
  await expect(page.getByRole('heading',{name:'사회복지사 1급 필기 CBT',exact:true})).toBeVisible();
- await expect(page.locator('.bank-summary')).toContainText(/등록\s*200문항/);
+ await expect(page.locator('.bank-summary')).toContainText(/등록\s*1000문항/);
  for(const label of ['실전 모의시험','랜덤 문제풀이','오답노트','북마크','학습 통계','문제은행 관리','학습 대시보드']){
   await nav(page,label);await expect(page.locator('.criteria-note')).toHaveCount(0);await expect(page.getByLabel('학습 기준')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  if(label==='문제은행 관리'){await expect(page.locator('.notice')).toContainText('부족 0문항');await expect(page.locator('.notice')).toContainText('사례 적용형 800문항');}
  }
  expect(errors).toEqual([]);
 });
@@ -120,7 +121,9 @@ test('모바일 터치 스와이프·가로·글자 확대에서 실제 하단·
  }
 });
 test('타이머 콜백 전 만료 클릭도 모든 교시의 답안 잠금과 최종 결과 이동',async({page})=>{
- await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});await page.goto('');await page.getByRole('button',{name:'모의시험 시작하기',exact:true}).click();
+ await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});
+ // Pause scheduled callbacks so only the expired-click handler is under test.
+ await page.clock.pauseAt(new Date('2026-01-01T00:00:05Z'));await page.goto('');await page.getByRole('button',{name:'모의시험 시작하기',exact:true}).click();
  for(let section=0;section<3;section++){
   const s=await read(page);await page.clock.setSystemTime(s.exam.deadline+1000);
   await choices(page).first().click();

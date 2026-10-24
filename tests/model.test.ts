@@ -2,18 +2,49 @@ import { describe, expect, it } from 'vitest';
 import { BASE_BANK, SUBJECTS, validateQuestion, fingerprint, createExam, grade, emptyStore, answerExam, submitExam, resumeSection, restoreStore, startPractice, checkPractice, nextPractice, importQuestions, parseCsv, remainingSeconds } from '../src/model';
 import { PROFILE } from '../src/profile';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 describe('원고와 실제 은행', () => {
- it('200개 독립 자체 문항, 800개 부족; 8영역마다 25개, 중복 없음', () => {
-  expect(BASE_BANK).toHaveLength(200);
-  expect(new Set(BASE_BANK.map(q=>q.id)).size).toBe(200);
-  expect(new Set(BASE_BANK.map(fingerprint)).size).toBe(200);
-  SUBJECTS.forEach(s=>expect(BASE_BANK.filter(q=>q.subject===s)).toHaveLength(25));
+ it('목표1000개를 첫 완료 기준으로 검사, 8영역마다125개, 중복 없음', () => {
+  expect(BASE_BANK).toHaveLength(1000);
+  expect(new Set(BASE_BANK.map(q=>q.id)).size).toBe(1000);
+  expect(new Set(BASE_BANK.map(fingerprint)).size).toBe(1000);
+  SUBJECTS.forEach(s=>expect(BASE_BANK.filter(q=>q.subject===s)).toHaveLength(125));
  });
  for (const q of BASE_BANK) it(`5지선다/출처/권리/정답/미확인 연도 검사 ${q.id}`,()=>{
   expect(validateQuestion(q)).toEqual(q);expect(q.type).toBe('original');
-  expect(q.year).toBeNull();expect(q.session).toBeNull();expect(q.family).toBeUndefined();
+  expect(q.year).toBeNull();expect(q.session).toBeNull();
+  if (q.variantKind === 'scenario') expect(q.family).toMatch(/^SWG1-SC-/);
+  else expect(q.family).toBeUndefined();
   expect(q.explanation.length).toBeGreaterThan(35);expect(q.reviewNote).toContain('미완료');
   expect(q.choices[q.answer-1]).toBeTruthy();
+ });
+ it('기존200개 ID·문항·보기·정답·해설·메타데이터를 모두 보존',()=>{
+  expect(createHash('sha256').update(JSON.stringify(BASE_BANK.slice(0,200))).digest('hex')).toBe('9d68685b8df396bcd164ee0dfa63dc6cd09b8b78d90716196ca16397bde4cfdd');
+ });
+ it('사례형800개를 200개 개념군×4로 공개하고 숫자변형과 구별',()=>{
+  const extra=BASE_BANK.filter(q=>q.variantKind==='scenario');expect(extra).toHaveLength(800);
+  const families=new Set(extra.map(q=>q.family));expect(families.size).toBe(200);
+  for(const family of families){
+   const rows=extra.filter(q=>q.family===family);expect(rows).toHaveLength(4);
+   expect(new Set(rows.map(q=>q.question)).size).toBe(4);
+   expect(new Set(rows.map(q=>q.choices[q.answer-1])).size).toBe(1);
+   expect(rows.every(q=>q.calculation===undefined)).toBe(true);
+  }
+  expect(BASE_BANK.filter(q=>q.type!=='original')).toHaveLength(0);
+ });
+ it('각 영역의 정답 위치가 다섯 보기에 분산되고 한 번호에 과도하게 몰리지 않음',()=>{
+  for(const subject of SUBJECTS){
+   const rows=BASE_BANK.filter(q=>q.subject===subject);
+   for(let answer=1;answer<=5;answer++){
+    const count=rows.filter(q=>q.answer===answer).length;
+    expect(count).toBeGreaterThanOrEqual(10);expect(count).toBeLessThanOrEqual(40);
+   }
+  }
+ });
+ it('한 시험에서 동일 개념군 사례를 중복 출제하지 않음',()=>{
+  const exam=createExam(BASE_BANK,'main');const families=exam.questions.filter(q=>q.family).map(q=>q.family);
+  expect(new Set(families).size).toBe(families.length);
+  SUBJECTS.forEach(s=>expect(exam.questions.filter(q=>q.subject===s)).toHaveLength(25));
  });
  it('JSON과 CSV 양식이 모두 등록되며 기본 은행과의 본문 중복은 제외',()=>{
   for(const path of ['json','csv']){
