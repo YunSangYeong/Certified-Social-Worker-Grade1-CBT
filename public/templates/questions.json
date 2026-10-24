@@ -1,0 +1,26 @@
+[
+  {
+    "id": "LOCAL-SAMPLE-001",
+    "subject": "인간행동과 사회환경",
+    "topic": "브론펜브레너의 생태체계 관점",
+    "question": "브론펜브레너의 생태체계 관점에서 가족과 학교 사이의 관계에 해당하는 체계는?",
+    "choices": [
+      "미시체계",
+      "외체계",
+      "거시체계",
+      "시간체계",
+      "중간체계"
+    ],
+    "answer": 5,
+    "explanation": "중간체계는 개인이 직접 참여하는 둘 이상의 미시체계 사이의 연계를 뜻한다. 가족과 학교의 연결이 대표적이다.",
+    "difficulty": "중",
+    "year": null,
+    "session": null,
+    "type": "original",
+    "sourceUrl": "https://github.com/YunSangYeong/Certified-Social-Worker-Grade1-CBT/blob/main/scripts/author_bank.py",
+    "verificationStatus": "pending",
+    "reviewNote": "사용자가 출처와 이용 조건, 정답 근거를 확인한 뒤 승인하세요.",
+    "version": "main",
+    "rights": "자체 제작 원고: CC BY 4.0, 표시: Certified-Social-Worker-Grade1-CBT contributors. 기출 원문을 복제하지 않음."
+  }
+]
